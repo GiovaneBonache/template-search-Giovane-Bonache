@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 from typing import List, Optional, Tuple
 
@@ -25,19 +26,45 @@ class State:
         return self.tiles.index(0)
 
     def neighbors(self) -> List["State"]:
-        """Retorna os estados filhos válidos a partir deste estado."""
-        # TODO: implemente a geração de estados filhos
-        raise NotImplementedError
+        children = []
+        position = self.blank_index
+        row, col = divmod(position, 3)
+
+        moves = [
+            (-1, 0, "up"),
+            (1, 0, "down"),
+            (0, -1, "left"),
+            (0, 1, "right")
+        ]
+
+        for dr, dc, action in moves:
+            new_row = row + dr
+            new_col = col + dc
+
+            if 0 <= new_row < 3 and 0 <= new_col < 3:
+                new_position = new_row * 3 + new_col
+                new_tiles = list(self.tiles)
+
+                new_tiles[position], new_tiles[new_position] = new_tiles[new_position], new_tiles[position]
+
+                child = State(tuple(new_tiles), self, action, self.cost + 1)
+                children.append(child)
+
+        return children
 
     def path(self) -> List["State"]:
-        """Retorna a sequência de estados do estado inicial até este."""
-        # TODO: implemente a reconstrução do caminho usando self.parent
-        raise NotImplementedError
+        path = []
+        current = self
+
+        while current is not None:
+            path.append(current)
+            current = current.parent
+
+        path.reverse()
+        return path
 
     def actions(self) -> List[str]:
-        """Retorna a sequência de ações do estado inicial até este."""
-        # TODO: implemente usando path()
-        raise NotImplementedError
+        return [state.action for state in self.path() if state.action is not None]
 
     def __eq__(self, other: object) -> bool:
         return isinstance(other, State) and self.tiles == other.tiles

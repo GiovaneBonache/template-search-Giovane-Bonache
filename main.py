@@ -29,3 +29,12 @@ if __name__ == "__main__":
     print_result("BFS",  BFS().search(initial))
     print_result("DFS",  DFS().search(initial))
     print_result("A*",   AStar().search(initial))
+
+    funcional = State((1, 2, 3, 4, 5, 6, 0, 7, 8))
+
+    print("Simples:")
+    print(funcional)
+
+    print_result("BFS",  BFS().search(funcional))
+    print_result("DFS",  DFS().search(funcional))
+    print_result("A*",   AStar().search(funcional))
